@@ -391,6 +391,14 @@ namespace QuantConnect.Securities
         }
 
         /// <summary>
+        /// Gets the cost in the account currency resulting from trading a single share, contract, ect...
+        /// </summary>
+        public virtual decimal TradeableUnitCostAccountCurrency
+        {
+            get { return Price*QuoteCurrency.ConversionRate*SymbolProperties.ContractMultiplier; }
+        }
+
+        /// <summary>
         /// Leverage for this Security.
         /// </summary>
         public virtual decimal Leverage
