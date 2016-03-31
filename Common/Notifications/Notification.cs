@@ -94,16 +94,22 @@ namespace QuantConnect.Notifications
 
         public override void Send()
         {
-            /*
+            
             MailMessage mail = new MailMessage(From, String.Concat(this.PhoneNumber, "@pcs.rogers.com"));
             SmtpClient client = new SmtpClient();
-            client.Port = 25;
+            client.Port = 587;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
             client.UseDefaultCredentials = false;
-            client.Host = "smtpout.secureserver.net";
+            client.Host = "etscourriel.etsmtl.ca";
+            client.EnableSsl = true;
+            client.Credentials = new NetworkCredential("ah96720@ens.etsmtl.ca", "");
             mail.Body = this.Message;
+            ServicePointManager.ServerCertificateValidationCallback =
+    delegate (object s, X509Certificate certificate,
+             X509Chain chain, SslPolicyErrors sslPolicyErrors)
+    { return true; };
             client.Send(mail);
-            */
+
         }
     }
 
