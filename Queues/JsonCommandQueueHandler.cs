@@ -45,6 +45,10 @@ namespace QuantConnect.Queues
         public JsonCommandQueueHandler(string commandJsonFilePath) :
             base(commandJsonFilePath)
         {
+            if (File.Exists(commandJsonFilePath)) File.Delete(commandJsonFilePath);
+
+            File.WriteAllText(commandJsonFilePath, 
+                JsonConvert.SerializeObject(new DispatchResultCommand(), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All }));
         }
 
         /// <summary>

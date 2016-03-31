@@ -26,6 +26,7 @@ using QuantConnect.Lean.Engine.DataFeeds;
 using QuantConnect.Lean.Engine.Setup;
 using QuantConnect.Lean.Engine.TransactionHandlers;
 using QuantConnect.Logging;
+using QuantConnect.Notifications;
 using QuantConnect.Orders;
 using QuantConnect.Packets;
 using QuantConnect.Statistics;
@@ -894,6 +895,24 @@ namespace QuantConnect.Lean.Engine.Results
             foreach (var pair in _algorithm.RuntimeStatistics)
             {
                 RuntimeStatistic(pair.Key, pair.Value);
+            }
+
+            while (_algorithm.Notify.Messages.Count > 0)
+            {
+                Notification message;
+                if (_algorithm.Notify.Messages.TryDequeue(out message))
+                {
+                    //Process the notification messages:
+                    Log.Trace("LiveTradingResultHandler.ProcessSynchronousEvents(): Processing Notification...");
+                    try
+                    {
+                        _messagingHandler.SendNotification(message);
+                    }
+                    catch (Exception err)
+                    {
+                        Log.Error(err, "Sending notification: " + message.GetType().FullName);
+                    }
+                }
             }
         }
     }

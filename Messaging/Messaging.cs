@@ -127,10 +127,9 @@ namespace QuantConnect.Messaging
              || type == typeof (NotificationWeb)
              || type == typeof (NotificationSms))
             {
-                Log.Error("Messaging.SendNotification(): Send not implemented for notification of type: " + type.Name);
-                return;
+                notification.Send();
             }
-            notification.Send();
+            
         }
     }
 }

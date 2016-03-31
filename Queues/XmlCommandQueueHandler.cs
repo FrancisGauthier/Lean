@@ -47,6 +47,14 @@ namespace QuantConnect.Queues
         public XmlCommandQueueHandler(string commandFilePath)
             : base(commandFilePath)
         {
+            CommandQueue commands = new CommandQueue();
+            //commands.Enqueue(new LiquidateCommand());
+            commands.Enqueue(new DispatchResultCommand());
+
+            using (FileStream stream = new FileStream(commandFilePath, FileMode.OpenOrCreate))
+            {
+                _serializer.Serialize(stream, commands);
+            }
         }
 
         /// <summary>

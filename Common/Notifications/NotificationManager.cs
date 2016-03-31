@@ -76,7 +76,7 @@ namespace QuantConnect.Notifications
         /// <param name="address">Email address to send to</param>
         public bool Email(string address, string subject, string message, string data = "")
         {
-            if (!_liveMode) return false;
+         
             var allow = Allow();
 
             if (allow)
@@ -95,7 +95,7 @@ namespace QuantConnect.Notifications
         /// <param name="message">Message to send</param>
         public bool Sms(string phoneNumber, string message)
         {
-            if (!_liveMode) return false;
+            
             var allow = Allow();
             if (allow)
             {

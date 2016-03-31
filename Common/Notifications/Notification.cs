@@ -13,6 +13,9 @@
  * limitations under the License.
 */
 
+using System;
+using System.Net.Mail;
+
 namespace QuantConnect.Notifications
 {
     /// <summary>
@@ -20,14 +23,12 @@ namespace QuantConnect.Notifications
     /// </summary>
     public abstract class Notification
     {
+        public string From = "dispatcher@quantconnect.com";
         /// <summary>
         /// Method for sending implementations of notification object types.
         /// </summary>
         /// <remarks>SMS, Email and Web are all handled by the QC Messaging Handler. To implement your own notification type implement it here.</remarks>
-        public virtual void Send()
-        {
-            //
-        }
+        public abstract void Send();
     }
 
     /// <summary>
@@ -55,6 +56,11 @@ namespace QuantConnect.Notifications
             Address = address;
             Data = data;
         }
+
+        public override void Send()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>
@@ -81,6 +87,20 @@ namespace QuantConnect.Notifications
         {
             PhoneNumber = number;
             Message = message;
+        }
+
+        public override void Send()
+        {
+            /*
+            MailMessage mail = new MailMessage(From, String.Concat(this.PhoneNumber, "@pcs.rogers.com"));
+            SmtpClient client = new SmtpClient();
+            client.Port = 25;
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            client.UseDefaultCredentials = false;
+            client.Host = "smtpout.secureserver.net";
+            mail.Body = this.Message;
+            client.Send(mail);
+            */
         }
     }
 
@@ -123,6 +143,19 @@ namespace QuantConnect.Notifications
             Data = data;
             Subject = subject;
             Address = address;
+        }
+
+        public override void Send()
+        {
+            MailMessage mail = new MailMessage(From, this.Address);
+            SmtpClient client = new SmtpClient();
+            client.Port = 80;
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            client.UseDefaultCredentials = false;
+            client.Host = "relay-hosting.secureserver.net";
+            mail.Subject = this.Subject;
+            mail.Body = this.Message;
+            client.Send(mail);
         }
     }
 }
