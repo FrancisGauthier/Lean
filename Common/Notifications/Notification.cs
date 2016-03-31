@@ -14,7 +14,10 @@
 */
 
 using System;
+using System.Net;
 using System.Net.Mail;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace QuantConnect.Notifications
 {
@@ -23,7 +26,7 @@ namespace QuantConnect.Notifications
     /// </summary>
     public abstract class Notification
     {
-        public string From = "dispatcher@quantconnect.com";
+        public string From = "francis.gauthier.3@ens.etsmtl.ca";
         /// <summary>
         /// Method for sending implementations of notification object types.
         /// </summary>
@@ -149,12 +152,18 @@ namespace QuantConnect.Notifications
         {
             MailMessage mail = new MailMessage(From, this.Address);
             SmtpClient client = new SmtpClient();
-            client.Port = 80;
+            client.Port = 587;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
             client.UseDefaultCredentials = false;
-            client.Host = "relay-hosting.secureserver.net";
+            client.Host = "etscourriel.etsmtl.ca";
+            client.EnableSsl = true;
+            client.Credentials = new NetworkCredential("ah96720@ens.etsmtl.ca", "");
             mail.Subject = this.Subject;
             mail.Body = this.Message;
+            ServicePointManager.ServerCertificateValidationCallback =
+    delegate (object s, X509Certificate certificate,
+             X509Chain chain, SslPolicyErrors sslPolicyErrors)
+    { return true; };
             client.Send(mail);
         }
     }
